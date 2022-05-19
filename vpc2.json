@@ -1,0 +1,90 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+        "Description": "",
+        "Metadata": {
+    
+        },
+        "Parameters": {
+        
+        },
+        "Mappings": {
+    
+        },
+        "Conditions": {
+    
+        },
+        "Resources": {
+        "myfirstvpc": {
+          "Type": "AWS::EC2::VPC",
+          "Properties": {
+            "CidrBlock": "10.0.0.0/16",
+            "Tags": [
+              { "Key": "Name", "Value":  "myfirstvpc" }]
+          }
+        },
+        
+        "myfirstvpcIGW": {
+          "Type": "AWS::EC2::InternetGateway",
+          "Properties": {  
+            "Tags":[{ "Key": "Name", "Value":  "myfirstvpcIGW" }]
+          }
+        },
+        "AttachGateway": {
+          "Type": "AWS::EC2::VPCGatewayAttachment",
+          "Properties": {
+            "VpcId": { "Ref": "myfirstvpc" },
+            "InternetGatewayId": { "Ref": "myfirstvpcIGW" }
+          }
+        },
+        
+        "myfirstvpcPubRTB": {
+          "Type": "AWS::EC2::RouteTable",
+          "Properties": {
+            "VpcId": { "Ref": "myfirstvpc" },
+           "Tags":[{ "Key": "Name", "Value":  "myfirstvpcRTB" }]
+          }
+        }, 
+        
+        "myfirstvpcPubrt": {
+          "Type": "AWS::EC2::Route",
+          "Properties": {
+            "RouteTableId":{ "Ref": "myfirstvpcPubRTB" },
+            "DestinationCidrBlock": "0.0.0.0/0",
+            "GatewayId":{ "Ref": "myfirstvpcIGW" }
+             }
+        },
+      
+      "Pubrouteassoc": {
+        "Type": "AWS::EC2::SubnetRouteTableAssociation",
+        "Properties": {
+          "SubnetId":{ "Ref": "myfirstvpcPubsub" },
+          "RouteTableId":{ "Ref": "myfirstvpcPubRTB" }
+          
+        }
+      },
+      
+      
+        "myfirstvpcPubsub": {
+          "Type": "AWS::EC2::Subnet",
+          "Properties": {
+            "AvailabilityZone": "us-east-1a",
+            "VpcId":{ "Ref": "myfirstvpc" },
+            "CidrBlock": "10.0.0.0/24",
+             "Tags":[{ "Key": "Name", "Value":  "myfirstvpcPubsub" }]
+          }
+        },
+        "myfirstvpcPrisub": {
+          "Type": "AWS::EC2::Subnet",
+          "Properties": {
+            "AvailabilityZone": "us-east-1a",
+            "VpcId":{ "Ref": "myfirstvpc" },
+            "CidrBlock": "10.0.1.0/24",
+             "Tags":[{ "Key": "Name", "Value":  "myfirstvpcPrisub" }]
+          }
+        }
+      },
+        
+        "Outputs": {
+    
+        }
+    }
